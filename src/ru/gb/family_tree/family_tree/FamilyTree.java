@@ -2,27 +2,27 @@ package ru.gb.family_tree.family_tree;
 
 import ru.gb.family_tree.human.Gender;
 import ru.gb.family_tree.human.Human;
-import ru.gb.family_tree.human.HumanCompareByAge;
-import ru.gb.family_tree.human.HumnCompareByName;
+import ru.gb.family_tree.human.comparators.HumanCompareByAge;
+import ru.gb.family_tree.human.comparators.HumanCompareByName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class FamilyTree implements Serializable, Iterable<Human> {
+public class FamilyTree<E extends FamilyTreeItem<E>> implements Serializable, Iterable<E> {
     private long humansId;
-    private List<Human> family;
+    private List<E> family;
 
-    public FamilyTree(List<Human> family){
+    public FamilyTree(List<E> family){
         this.family=family;
     }
 
     public FamilyTree(){
         this(new ArrayList<>());
     }
-public boolean addHuman(Human human){
+
+    public boolean addHuman(E human){
         if(human == null){
             return false;
         }
@@ -36,22 +36,22 @@ public boolean addHuman(Human human){
         return false;
 }
 
-private void addToParents(Human human){
-        for(Human parent: human.getParents()){
+    private void addToParents(E human){
+        for(E parent: human.getParents()){
             parent.addChild(human);
         }
 
-}
+    }
 
-private void addToChildren(Human human) {
-    for (Human child : human.getChildren()) {
+    private void addToChildren(E human) {
+    for (E child: human.getChildren()) {
         if (human.getGender() == Gender.Male) {
-            child.addParents(human);
+            child.addParents((E) human);
         }
     }
-}
+    }
 
-public boolean setWedding(Human man, Human woman){
+    public boolean setWedding(E man, E woman){
       if(man.getSpouse() == null && woman.getSpouse() == null){
           man.setSpouse(woman);
           woman.setSpouse(man);
@@ -59,51 +59,51 @@ public boolean setWedding(Human man, Human woman){
       } else {
           return false;
       }
-}
+    }
 
-public boolean remove(long humansId){
+    public boolean remove(long humansId){
         if (checkId(humansId)){
-            Human person = getById(humansId);
+            E person = getById(humansId);
             return family.remove(person);
         }
         return false;
-}
+    }
 
-private boolean checkId(long id){
+    private boolean checkId(long id){
         if (id>= humansId || id<0){
             return false;
         }
-        for (Human human:family){
+        for (E human:family){
             if(human.getId() == id){
                 return true;
             }
         }
         return false;
-}
+    }
 
-public Human getById(long id){
-    for (Human human:family){
+    public E getById(long id){
+    for (E human:family){
         if(human.getId() == id){
             return human;
         }
     }
     return null;
-}
+    }
 
-public String  getInfo() {
+    public String  getInfo() {
     StringBuilder sb = new StringBuilder();
     sb.append("В семейном древе ");
     sb.append(family.size());
     sb.append(" человек: \n");
-    Iterator<Human> iterator = family.iterator();
+    Iterator<E> iterator = family.iterator();
     while (iterator.hasNext()){
-        Human human = iterator.next();
+        E human = iterator.next();
     //for (Human human: family){
         sb.append(human);
         sb.append("\n");
     }
     return sb.toString();
-}
+    }
 
     @Override
     public String toString() {
@@ -111,15 +111,16 @@ public String  getInfo() {
     }
 
     @Override
-    public Iterator<Human> iterator() {
-        return new HumanIterrator(family);
+    public Iterator<E> iterator() {
+        return new HumanIterrator<>(family);
     }
 
-    public void sortByName(){
-        Collections.sort(family, new HumnCompareByName());
+    public boolean sortByName(){
+        family.sort(new HumanCompareByName<>());
+        return false;
     }
 
     public void sortByAge(){
-        Collections.sort(family, new HumanCompareByAge());
+        family.sort(new HumanCompareByAge<>());
     }
 }

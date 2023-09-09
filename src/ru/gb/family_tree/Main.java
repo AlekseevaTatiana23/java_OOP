@@ -46,10 +46,13 @@ public class Main {
         System.out.println(nadya.getInfo());
         System.out.println(familyTree.getInfo());
 
-        public void sortByName(){
-            familyTree.sortByName();
-        }
-        System.out.println(familyTree.sortByName());
+       // public void sortByName() {
+        //    familyTree.sortByName();
+       // } ЭТО ДОБАВИТЬ В СЕРВИС
+        familyTree.sortByName();
+        System.out.println(familyTree.getInfo());
+        familyTree.sortByAge();
+        System.out.println(familyTree.getInfo());
         //System.out.println(tanya.getFather());
     }
 }

@@ -6,22 +6,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class HumanIterrator implements Iterator<Human> {
-        private int index;
-        private List<Human> family;
+public class HumanIterrator<T> implements Iterator<T> {
+    private int index;
+    private List<T> family;
 
 
-    public HumanIterrator(List<Human> family) {
+    public HumanIterrator(List<T> family) {
         this.family = new ArrayList<>();
+    }
 
         @Override
-        public Human hasNext() {
+        public boolean hasNext () {
             return family.size() > index;
         }
 
         @Override
-        public Human next() {
+        public T next () {
             return family.get(index++);
         }
     }
-}
+

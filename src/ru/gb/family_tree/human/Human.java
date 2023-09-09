@@ -1,12 +1,14 @@
 package ru.gb.family_tree.human;
 
+import ru.gb.family_tree.family_tree.FamilyTreeItem;
+
 import java.io.Serializable;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 
-public class Human implements Serializable, Comparable {
+public class Human implements Serializable, Comparable<Human>, FamilyTreeItem<Human> {
     private long id;
     private String name;
     private Gender gender;
@@ -45,20 +47,17 @@ public class Human implements Serializable, Comparable {
         this(name, gender, dateBirthday, null, null, null);
     }
 
-    public boolean addChild(Human child){
-        if (!children.contains(child)){
-            children.add(child);
-            return true;
-        }
-    return false;
-    }
-
-    public boolean addParents(Human parent){
+    public void addParents(Human parent){
         if (!parents.contains(parent)){
             parents.add(parent);
-            return true;
         }
-        return false;
+    }
+
+    @Override
+    public void addChild(Human child){
+            if (!children.contains(child)){
+                children.add(child);
+            }
     }
 
     public boolean addSiblings(Human sibling){
@@ -87,6 +86,7 @@ public class Human implements Serializable, Comparable {
         return null;
     }
 
+    @Override
     public int getAge(){
         if (dateDeath == null){
             return getPeriod(dateBirthday, LocalDate.now());
@@ -108,6 +108,9 @@ public class Human implements Serializable, Comparable {
     public LocalDate getDateBirthday(){return dateBirthday;}
     public LocalDate getDateDeath(){return dateDeath;}
     public List<Human> getParents(){return parents;}
+
+
+
     public List<Human> getChildren(){return children;}
     public List<Human> getSiblings(){return siblings;}
     public void setDateBirthday(LocalDate dateBirthday){this.dateBirthday=dateBirthday;}
@@ -153,8 +156,13 @@ public class Human implements Serializable, Comparable {
         return human.getId() == getId();
     }
 
+    //Override
+    //##public int compareTo(Object o) {
+    //    return name.compareTo(((Human) o).name);
+    //}
+
     @Override
-    public int compareTo(Object o) {
-        return name.compareTo(((Human) o).name);
+    public int compareTo(Human o) {
+        return name.compareTo(o.name);
     }
 }
